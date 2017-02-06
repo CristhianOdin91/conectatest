@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Conecta - Actividad 2</title>
+</head>
+<body>
+	<h1>Conecta</h1>
+	<h2>Actividad 2</h2>
+
+	<div>
+		<label>
+			Ingresa números separados por comas:
+			<input type="text" id="numeros" value="10,5,3,1,6" name="">
+			<button onclick="init()">Enviar</button>
+		</label>
+	</div>
+
+	<div style="display: none;" id="contenedor-resultado">
+		<h3>Método 1</h3>
+		<p>Resultado: <span id="resultado-1"></span></p>
+		<p>Pasos: <span id="iteraciones-1"></span></p>
+		<h3>Método 2</h3>
+		<p>Resultado: <span id="resultado-2"></span></p>
+		<p>Pasos: <span id="iteraciones-2"></span></p>
+		<p><strong id="rendimiento"></strong></p>
+	</div>
+
+	<script type="text/javascript" src="../assets/js/actividad2.js"></script>
+</body>
+</html>
