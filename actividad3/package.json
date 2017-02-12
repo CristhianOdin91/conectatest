@@ -1,0 +1,17 @@
+{
+  "name": "libros",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Api de Libros",
+  "scripts": {
+    "start": "node ./bin/server"
+  },
+  "author": "1337Sora",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "mongoose": "^4.8.2",
+    "pug": "^2.0.0-beta11"
+  }
+}
