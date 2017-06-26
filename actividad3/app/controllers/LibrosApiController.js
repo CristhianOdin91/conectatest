@@ -1,154 +1,78 @@
 var Libro = require('../models/Libro');
 
 module.exports = {
-	index: function(req,res)
+	index: (req,res) =>
 	{
-		Libro.find(function(err,doc){
-			// res.setHeader('Content-Type','aplication/json');
+		Libro.find().then(
+			libros => {
+				if(!Boolean(libros))
+					return res.status(404).json({ message: 'No se encontraron libros' });
 
-			if(err)
-			{
-				res.statusCode = 500;
-				res.send(err);
-			}
-			else
-			{
-				res.statusCode = 200;
-				res.send(JSON.stringify({
-					errors: false,
-					data: doc
-				}));
-			}
-		});
+				res.json(libros);
+			},
+			error => res.status(500).json({ error })
+		);
 	},
-	show: function(req,res)
+	show: (req,res) =>
 	{
-		// res.setHeader('Content-Type','aplication/json');
-		var id = req.params.id;
+		Libro.findById(req.params.id).then(
+			libro => {
+				if(!Boolean(libro))
+					return res.status(404).json({ message: 'No se encontraron libros' });
 
-		if (id.match(/^[0-9a-fA-F]{24}$/))
-		{
-			Libro.findById(id,function(err,doc){
-				if(err)
-				{
-					res.statusCode = 500;
-					res.send(err);
-				}
-				else
-				{
-					res.statusCode = 200;
-					res.send(JSON.stringify({
-						errors: false,
-						data: doc
-					}));
-				}
-			});
-		}
-		else
-		{
-			res.statusCode = 500;
-			res.send(JSON.stringify({
-				errors: {
-					id: {
-						message: 'El ID proporcionado no es válido'
-					}
-				}
-			}));
-		}
-	},
-	store: function(req,res)
-	{
-		var libroObj = new Libro(req.body);
+				res.json(libro);
+			},
+			error => {
+				if(error.name == 'CastError')
+					return res.status(404).json({ message: 'No se encontraron libros' });
+					// return res.status(400).json({ message: 'El ID proporcionado no es válido' });
 
-		libroObj.save(function(err,doc){
-			res.setHeader('Content-Type','aplication/json');
-
-			if(err)
-			{
-				res.statusCode = 500;
-				res.send(err);
+				res.status(500).json({ error }) 
 			}
-			else
-			{
-				res.statusCode = 200;
-				res.send(JSON.stringify({
-					errors: false,
-					data: doc
-				}));
+		);
+	},
+	store: (req,res) =>
+	{
+		Libro(req.body).save().then(
+			libro => res.status(201).json(libro),
+			error => res.status(500).json({ error })
+		);
+	},
+	update: (req,res) =>
+	{
+		Libro.findByIdAndUpdate(req.params.id,req.body).then(
+			libro => {
+				if(!Boolean(libro))
+					return res.status(404).json({ message: 'No se encontraron libros' });
+
+				Libro.findById(req.params.id).then(
+					upLibro => res.json(upLibro),
+					error => res.status(500).json({ error })
+				);
+			},
+			error => {
+				if(error.name == 'CastError')
+					return res.status(404).json({ message: 'No se encontraron libros' });
+
+				res.status(500).json({ error }) 
 			}
-
-		});
+		);
 	},
-	update: function(req,res)
+	destroy: (req,res) =>
 	{
-		res.setHeader('Content-Type','aplication/json');
-		var id = req.params.id;
+		Libro.findByIdAndRemove(req.params.id).then(
+			libro => {
+				if(!Boolean(libro))
+					return res.status(404).json({ message: 'No se encontraron libros' });
 
-		if (id.match(/^[0-9a-fA-F]{24}$/))
-		{
-			Libro.findByIdAndUpdate(id,req.body,function(err,doc){
-				if(err)
-				{
-					res.statusCode = 500;
-					res.send(err);
-				}
-				else
-				{
-					Libro.findById(id,function(err,doc){
-						res.statusCode = 200;
-						res.send(JSON.stringify({
-							errors: false,
-							data: doc
-						}));
-					});
-				}
-			});
-		}
-		else
-		{
-			res.statusCode = 500;
-			res.send(JSON.stringify({
-				errors: {
-					id: {
-						message: 'El ID proporcionado no es válido'
-					}
-				}
-			}));
-		}
-	},
-	destroy: function(req,res)
-	{
-		res.setHeader('Content-Type','aplication/json');
-		var id = req.params.id;
+				res.json(libro);
+			},
+			error => {
+				if(error.name == 'CastError')
+					return res.status(404).json({ message: 'No se encontraron libros' });
 
-		if (id.match(/^[0-9a-fA-F]{24}$/))
-		{
-			Libro.findByIdAndRemove(id,function(err,doc){
-				if(err)
-				{
-					res.statusCode = 500;
-					res.send(err);
-				}
-				else
-				{
-					res.statusCode = 200;
-					res.send(JSON.stringify({
-						errors: false,
-						data: doc
-					}));
-				}
-			});
-		}
-		else
-		{
-			res.statusCode = 500;
-			res.send(JSON.stringify({
-				errors: {
-					id: {
-						message: 'El ID proporcionado no es válido'
-					}
-				}
-			}));
-		}
+				res.status(500).json({ error }) 
+			}
+		);
 	}
 };

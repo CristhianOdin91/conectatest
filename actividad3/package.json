@@ -4,7 +4,7 @@
   "private": true,
   "description": "Api de Libros",
   "scripts": {
-    "start": "node ./bin/server"
+    "start": "nodemon ./bin/server"
   },
   "author": "1337Sora",
   "license": "ISC",
